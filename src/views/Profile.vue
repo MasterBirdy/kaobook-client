@@ -1,7 +1,7 @@
 <template>
-    <div class="home">
+    <div class="profile">
         <v-container>
-            <h1>Homepage</h1>
+            <h1>Profile</h1>
         </v-container>
     </div>
 </template>
@@ -10,6 +10,6 @@
 // @ is an alias to /src
 
 export default {
-    name: "Home"
+    name: "Profile"
 };
 </script>
