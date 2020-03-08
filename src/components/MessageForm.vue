@@ -63,7 +63,7 @@ export default {
                 axios
                     .post(`/profile/5e5f0446139701468afb25fc/post`, post)
                     .then(res => {
-                        console.log(res);
+                        this.$emit("postAdded", res.data.post);
                     })
                     .catch(err => console.log(err.response))
                     .finally(() => {

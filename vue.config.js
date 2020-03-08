@@ -14,6 +14,9 @@ module.exports = {
             },
             "/registeruser": {
                 target: "http://localhost:3000"
+            },
+            "/post": {
+                target: "http://localhost:3000"
             }
         }
     }

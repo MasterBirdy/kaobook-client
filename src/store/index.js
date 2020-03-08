@@ -10,7 +10,8 @@ export default new Vuex.Store({
         firstName: "",
         lastName: "",
         profilePic: "@/assets/mystery.png",
-        email: ""
+        email: "",
+        timeline: []
     },
     getters: {
         id: state => state.id,
@@ -18,7 +19,8 @@ export default new Vuex.Store({
         firstName: state => state.firstName,
         lastName: state => state.lastName,
         profilePic: state => state.profilePic,
-        email: state => state.email
+        email: state => state.email,
+        timeline: state => state.timeline
     },
     mutations: {
         setId(state, id) {
@@ -38,6 +40,12 @@ export default new Vuex.Store({
         },
         setEmail(state, email) {
             state.email = email;
+        },
+        setTimeline(state, timeline) {
+            state.timeline = timeline;
+        },
+        addToTimeline(state, object) {
+            state.timeline.push(object);
         }
     },
     actions: {},

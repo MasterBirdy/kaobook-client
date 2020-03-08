@@ -76,8 +76,7 @@
                         >
                         <v-divider></v-divider>
                         <v-card-actions class="px-4 d-flex justify-center">
-                            <!-- <v-btn depressed dark color="pink lighten-2"><v-icon  class="mr-2">mdi-message</v-icon> Leave a Post</v-btn> -->
-                            <MessageForm></MessageForm>
+                            <MessageForm @postAdded="addPost"></MessageForm>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -87,77 +86,17 @@
                             'v-timeline--dense': $vuetify.breakpoint.smAndDown
                         }"
                     >
-                        <v-timeline-item
-                            v-for="post in timeline"
-                            :key="post.title"
-                        >
-                            <v-card outlined :style="{ background: '#fafafa' }">
-                                <v-card-title class="font-weight-regular">
-                                    {{ post.title }}
-                                </v-card-title>
-                                <v-card-text class="mt-n3">
-                                    {{ post.text }}
-                                </v-card-text>
-                                <v-card-actions class="mt-n3 ml-2 mb-1">
-                                    <v-btn depressed color="success">
-                                        <v-icon class="mr-2">
-                                            mdi-thumb-up
-                                        </v-icon>
-                                        Like
-                                    </v-btn>
-                                    <v-btn depressed color="primary lighten-1">
-                                        <v-icon class="mr-2">
-                                            mdi-comment
-                                        </v-icon>
-                                        Comment
-                                    </v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </v-timeline-item>
-                        <!-- <v-timeline-item>
-                            <v-card outlined :style="{ background: '#fafafa' }">
-                                <v-card-title class="headline"
-                                    >Lorem ipsum</v-card-title
-                                >
-                                <v-card-text>
-                                    Lorem ipsum dolor sit amet, no nam oblique
-                                    veritus. Commune scaevola imperdiet nec ut,
-                                    sed euismod convenire principes at. Est et
-                                    nobis iisque percipit, an vim zril
-                                    disputando voluptatibus, vix an salutandi
-                                    sententiae.
-                                </v-card-text>
-                                <v-card-actions class="mt-n3 ml-2 mb-1">
-                                    <v-btn depressed color="success"
-                                        ><v-icon class="mr-2"
-                                            >mdi-thumb-up</v-icon
-                                        >
-                                        Like</v-btn
-                                    >
-                                    <v-btn depressed color="primary lighten-1"
-                                        ><v-icon class="mr-2"
-                                            >mdi-comment</v-icon
-                                        >
-                                        Comment</v-btn
-                                    >
-                                </v-card-actions>
-                            </v-card>
-                        </v-timeline-item>
-                        <v-timeline-item>
-                            <v-card outlined :style="{ background: '#fafafa' }">
-                                <v-card-title class="headline"
-                                    >Lorem ipsum</v-card-title
-                                >
-                                <v-card-text>
-                                    Lorem ipsum dolor sit amet, no nam oblique
-                                    veritus. Commune scaevola imperdiet nec ut,
-                                    sed euismod convenire principes at. Est et
-                                    nobis iisque percipit, an vim zril
-                                    disputando voluptatibus, vix an salutandi
-                                    sententiae.
-                                </v-card-text>
-                            </v-card>
-                        </v-timeline-item> -->
+                        <TimelinePost
+                            v-for="(post, index) in this.$store.getters
+                                .timeline"
+                            :id="post._id"
+                            :key="post.title + index"
+                            :title="post.title"
+                            :text="post.text"
+                            :author="post.author"
+                            :likes="post.likes"
+                            @like="like"
+                        ></TimelinePost>
                     </v-timeline>
                 </v-col>
             </v-row>
@@ -167,18 +106,51 @@
 
 <script>
 import MessageForm from "@/components/MessageForm";
+import TimelinePost from "@/components/TimelinePost";
 import axios from "axios";
 
 export default {
     name: "Home",
     components: {
-        MessageForm
+        MessageForm,
+        TimelinePost
     },
     data() {
         return {
-            loading: true,
-            timeline: []
+            loading: true
         };
+    },
+    methods: {
+        addPost() {
+            axios
+                .get(`/profile/${this.$store.getters.id}/timeline`)
+                .then(res => {
+                    console.log(res);
+                    if (res.status === 200) {
+                        this.$store.commit("setTimeline", res.data.timeline);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        like(id) {
+            axios
+                .post(`/post/${id}`, { id: this.$store.getters.id })
+                .then(res => {
+                    console.log(res);
+                    console.log(res.status === 200);
+                    if (res.status === 200) {
+                        this.$store.getters.timeline.forEach(post => {
+                            console.log("hi");
+                            if (post._id === res.data.post._id) {
+                                post.likes = res.data.post.likes;
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.log(err.response));
+        }
     },
     computed: {
         noName: function() {
@@ -218,12 +190,11 @@ export default {
                 .then(res => {
                     console.log(res);
                     if (res.status === 200) {
-                        this.timeline = res.data.timeline;
+                        this.$store.commit("setTimeline", res.data.timeline);
                     }
                 })
                 .catch(err => {
                     console.log(err);
-                    console.log("Hellko?");
                 });
         }
     }
