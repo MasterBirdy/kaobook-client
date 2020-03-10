@@ -9,7 +9,7 @@ export default new Vuex.Store({
         name: "",
         firstName: "",
         lastName: "",
-        profilePic: "@/assets/mystery.png",
+        profilePic: "",
         email: "",
         timeline: []
     },

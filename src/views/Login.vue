@@ -35,6 +35,7 @@
                             depressed
                             class="px-2"
                             href="/auth/logout"
+                            @click="logout"
                             >logout</v-btn
                         >
                     </v-row>
@@ -45,6 +46,7 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
 import LoginForm from "@/components/LoginForm";
 
 export default {
@@ -69,6 +71,9 @@ export default {
                 this.errors = [];
                 error.errors.forEach(err => this.error.push(err));
             }
+        },
+        logout() {
+            Cookies.remove("jwtToken");
         }
     }
 };

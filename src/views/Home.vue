@@ -25,7 +25,11 @@
                     </h1>
                     <v-avatar size="200">
                         <img
-                            :src="$store.getters.profilePic"
+                            :src="
+                                $store.getters.profilePic
+                                    ? $store.getters.profilePic
+                                    : require('@/assets/mystery.png')
+                            "
                             alt="Profile Pic"
                         />
                     </v-avatar>
@@ -95,7 +99,9 @@
                             :text="post.text"
                             :author="post.author"
                             :likes="post.likes"
+                            :comments="post.comments"
                             @like="like"
+                            @commentAdded="addComment"
                         ></TimelinePost>
                     </v-timeline>
                 </v-col>
@@ -108,6 +114,7 @@
 import MessageForm from "@/components/MessageForm";
 import TimelinePost from "@/components/TimelinePost";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
     name: "Home",
@@ -121,9 +128,14 @@ export default {
         };
     },
     methods: {
-        addPost() {
-            axios
-                .get(`/profile/${this.$store.getters.id}/timeline`)
+        updateTimeline() {
+            axios({
+                method: "get",
+                url: `/profile/${this.$store.getters.id}/timeline`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                }
+            })
                 .then(res => {
                     console.log(res);
                     if (res.status === 200) {
@@ -134,9 +146,21 @@ export default {
                     console.log(err);
                 });
         },
+        addPost() {
+            this.updateTimeline();
+        },
+        addComment() {
+            this.updateTimeline();
+        },
         like(id) {
-            axios
-                .post(`/post/${id}`, { id: this.$store.getters.id })
+            axios({
+                method: "post",
+                url: `/post/${id}`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                },
+                data: { id: this.$store.getters.id }
+            })
                 .then(res => {
                     console.log(res);
                     console.log(res.status === 200);
@@ -159,11 +183,24 @@ export default {
     },
     created() {
         if (this.noName) {
-            axios
-                .get("/profile")
+            axios({
+                method: "get",
+                url: "/profile",
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                }
+            })
                 .then(res => {
+                    console.log(res);
                     if (res.status === 200) {
-                        this.$store.commit("setName", res.data.data.name);
+                        this.$store.commit(
+                            "setName",
+                            res.data.data.name
+                                ? res.data.data.name
+                                : res.data.data.first_name +
+                                      " " +
+                                      res.data.data.last_name
+                        );
                         this.$store.commit(
                             "setFirstName",
                             res.data.data.first_name
@@ -172,10 +209,12 @@ export default {
                             "setLastName",
                             res.data.data.last_name
                         );
-                        this.$store.commit(
-                            "setProfilePic",
-                            res.data.data.profile_pic
-                        );
+                        if (res.data.data.profile_pic) {
+                            this.$store.commit(
+                                "setProfilePic",
+                                res.data.data.profile_pic
+                            );
+                        }
                         this.$store.commit("setEmail", res.data.data.email);
                         this.$store.commit("setId", res.data.data._id);
                     } else {

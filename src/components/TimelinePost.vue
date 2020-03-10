@@ -31,6 +31,9 @@
                     :title="title"
                     :text="text"
                     :author="author"
+                    :comments="comments"
+                    :postId="id"
+                    @commentAdded="commentAdded"
                 ></CommentForm>
             </v-card-actions>
         </v-card>
@@ -48,7 +51,8 @@ export default {
         title: String,
         text: String,
         author: Object,
-        likes: Array
+        likes: Array,
+        comments: Array
     },
     computed: {
         userLiked() {
@@ -58,6 +62,9 @@ export default {
     methods: {
         like() {
             this.$emit("like", this.id);
+        },
+        commentAdded() {
+            this.$emit("commentAdded");
         }
     }
 };

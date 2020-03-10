@@ -15,9 +15,10 @@
                     class="mb-1"
                     label="Password"
                     v-model="password"
+                    :type="'password'"
                     :rules="[requiredRules]"
                 ></v-text-field>
-                <v-btn class="success">Submit</v-btn>
+                <v-btn class="success" @click="submit">Submit</v-btn>
             </v-form>
         </v-card-text>
     </v-card>
@@ -25,6 +26,8 @@
 
 <script>
 import axios from "axios";
+import Cookies from "js-cookie";
+
 export default {
     name: "LoginForm",
     data() {
@@ -43,8 +46,10 @@ export default {
                 };
                 axios({ url: "/auth/login", data: user, method: "POST" })
                     .then(res => {
-                        if (res.status === 200) this.$router.push("/");
-                        else console.log(res);
+                        if (res.status === 200) {
+                            Cookies.set("jwtToken", res.data.token);
+                            this.$router.push({ name: "Home" });
+                        }
                     })
                     .catch(err => {
                         this.$emit("errorEvent", err.response.data);

@@ -38,6 +38,7 @@
     </v-dialog>
 </template>
 <script>
+import Cookies from "js-cookie";
 import axios from "axios";
 
 export default {
@@ -58,10 +59,17 @@ export default {
                 const post = {
                     title: this.title,
                     text: this.text,
-                    author: this.$store.getters.id
+                    author: this.$store.getters.id,
+                    date: Date.now()
                 };
-                axios
-                    .post(`/profile/5e5f0446139701468afb25fc/post`, post)
+                axios({
+                    method: "post",
+                    url: `/profile/${this.$store.getters.id}/post`,
+                    headers: {
+                        authorization: "Bearer " + Cookies.get("jwtToken")
+                    },
+                    data: post
+                })
                     .then(res => {
                         this.$emit("postAdded", res.data.post);
                     })
