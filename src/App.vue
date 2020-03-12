@@ -1,22 +1,23 @@
 <template>
     <v-app style="background: #fefefe">
-        <Navbar></Navbar>
-        <v-content>
-            <router-view></router-view>
-        </v-content>
+        <component v-bind:is="layout"></component>
     </v-app>
 </template>
 
 <script>
-import Navbar from "@/components/Navbar";
+import DefaultLayout from "@/layouts/DefaultLayout";
+import LandingLayout from "@/layouts/LandingLayout";
 
 export default {
     name: "App",
-    components: {
-        Navbar
+    computed: {
+        layout() {
+            return this.$store.getters.layout;
+        }
     },
-    data: () => ({
-        //
-    })
+    components: {
+        DefaultLayout,
+        LandingLayout
+    }
 };
 </script>

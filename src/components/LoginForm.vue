@@ -48,7 +48,7 @@ export default {
                     .then(res => {
                         if (res.status === 200) {
                             Cookies.set("jwtToken", res.data.token);
-                            this.$router.push({ name: "Home" });
+                            this.$emit("successEvent");
                         }
                     })
                     .catch(err => {

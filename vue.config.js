@@ -6,7 +6,7 @@ module.exports = {
     devServer: {
         historyApiFallback: true,
         proxy: {
-            "/profile": {
+            "/authprofile": {
                 target: "http://localhost:3000"
             },
             "/auth": {

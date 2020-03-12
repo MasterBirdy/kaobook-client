@@ -17,13 +17,13 @@
                                 <v-row>
                                     <v-col cols="9">
                                         <v-card-title>
-                                            <p>{{ title }}</p>
+                                            <p>{{ title | decode }}</p>
                                         </v-card-title>
                                         <v-card-text>
                                             <p class="mt-n8 overline">
-                                                {{ author.name }}
+                                                {{ author.name | decode }}
                                             </p>
-                                            <p>{{ text }}</p>
+                                            <p>{{ text | decode }}</p>
                                         </v-card-text>
                                     </v-col>
                                     <v-col cols="3"
@@ -60,14 +60,22 @@
                                                 index) in comments"
                                                 :key="comment.text + index"
                                             >
-                                                <p>{{ comment.text }}</p>
+                                                <p>
+                                                    {{ comment.text | decode }}
+                                                </p>
                                                 <p class="overline">
-                                                    {{ comment.author.name }}
+                                                    {{
+                                                        comment.author.name
+                                                            | decode
+                                                    }}
                                                 </p>
                                                 <p
                                                     class="overline mt-n4 grey--text"
                                                 >
-                                                    {{ comment.formatted_date }}
+                                                    {{
+                                                        comment.formatted_date
+                                                            | decode
+                                                    }}
                                                 </p>
                                             </div>
                                         </v-card-text>

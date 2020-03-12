@@ -11,7 +11,7 @@
                             </li>
                         </ul>
                     </v-alert>
-                    <LoginForm></LoginForm>
+                    <LoginForm @successEvent="login"></LoginForm>
                     <v-divider class="mt-6 mb-2"></v-divider>
                     <p class="title font-weight-regular">
                         Login through Social Media
@@ -74,6 +74,10 @@ export default {
         },
         logout() {
             Cookies.remove("jwtToken");
+            localStorage.clear();
+        },
+        login() {
+            this.$router.push({ name: "SuccessLogin" });
         }
     }
 };

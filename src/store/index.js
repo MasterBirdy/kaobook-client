@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -11,8 +12,10 @@ export default new Vuex.Store({
         lastName: "",
         profilePic: "",
         email: "",
-        timeline: []
+        timeline: [],
+        layout: "LandingLayout"
     },
+    plugins: [createPersistedState()],
     getters: {
         id: state => state.id,
         name: state => state.name,
@@ -20,7 +23,8 @@ export default new Vuex.Store({
         lastName: state => state.lastName,
         profilePic: state => state.profilePic,
         email: state => state.email,
-        timeline: state => state.timeline
+        timeline: state => state.timeline,
+        layout: state => state.layout
     },
     mutations: {
         setId(state, id) {
@@ -46,6 +50,16 @@ export default new Vuex.Store({
         },
         addToTimeline(state, object) {
             state.timeline.push(object);
+        },
+        setLayout(state, layout) {
+            state.layout = layout;
+        },
+        changeLikes(state, updatedPost) {
+            state.timeline.forEach(post => {
+                if (post._id === updatedPost._id) {
+                    post.likes = updatedPost.likes;
+                }
+            });
         }
     },
     actions: {},

@@ -5,14 +5,24 @@
                 color="white"
                 @click="drawer = !drawer"
             ></v-app-bar-nav-icon>
-            <v-toolbar-title
-                class="text-uppercase white--text d-flex align-center flex-grow-1"
+            <router-link
+                :to="{ name: 'Home' }"
+                :style="{ textDecoration: 'none' }"
             >
-                <v-icon class="mr-2" color="grey lighten-5">
-                    mdi-book-open-variant
-                </v-icon>
-                <span class="font-weight-medium">Kao</span>book
-            </v-toolbar-title>
+                <v-toolbar-title
+                    class="text-uppercase white--text d-flex align-center flex-grow-1"
+                >
+                    <v-icon class="mr-2" color="grey lighten-5">
+                        mdi-book-open-variant
+                    </v-icon>
+                    <span class="font-weight-medium">Kao</span>book
+                </v-toolbar-title>
+            </router-link>
+            <v-spacer></v-spacer>
+            <v-btn href="/auth/logout" @click="logout" text color="white">
+                <span>Sign Out</span>
+                <v-icon class="ml-2"> mdi-exit-to-app</v-icon>
+            </v-btn>
         </v-app-bar>
         <v-navigation-drawer
             color="light-blue darken-2"
@@ -22,7 +32,7 @@
             temporary
         >
             <v-list>
-                <v-list-item router to="/">
+                <v-list-item router :to="{ name: 'Home' }">
                     <v-list-item-action>
                         <v-icon class="white--text">
                             mdi-home
@@ -32,7 +42,7 @@
                         Home
                     </v-list-item-title>
                 </v-list-item>
-                <v-list-item router to="/login">
+                <v-list-item router :to="{ name: 'Login' }">
                     <v-list-item-action>
                         <v-icon class="white--text">
                             mdi-login
@@ -42,7 +52,7 @@
                         Login
                     </v-list-item-title>
                 </v-list-item>
-                <v-list-item router to="/register">
+                <v-list-item router :to="{ name: 'Register' }">
                     <v-list-item-action>
                         <v-icon class="white--text">
                             mdi-account-plus
@@ -58,12 +68,20 @@
 </template>
 
 <script>
+import Cookies from "js-cookie";
+
 export default {
     name: "Navbar",
     data() {
         return {
             drawer: false
         };
+    },
+    methods: {
+        logout() {
+            Cookies.remove("jwtToken");
+            localStorage.clear();
+        }
     }
 };
 </script>

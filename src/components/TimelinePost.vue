@@ -2,11 +2,13 @@
     <v-timeline-item>
         <v-card outlined :style="{ background: '#fafafa' }">
             <v-card-title class="font-weight-regular">
-                {{ title }}
+                {{ title | decode }}
             </v-card-title>
-            <v-card-text class="mt-n3">
-                {{ text }}
+            <v-card-text class="mt-n3 py-0">
+                {{ text | decode }}
+                <p class="caption grey--text">{{ author.name | decode }}</p>
             </v-card-text>
+
             <v-card-actions class="mt-n3 ml-2 mb-1">
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
