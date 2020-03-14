@@ -20,6 +20,8 @@
             :name="name"
             :timeline="timeline"
             :profilePic="profilePic"
+            @updateTimeline="updateTimeline"
+            @like="like"
         ></ProfileUnit>
     </div>
 </template>
@@ -27,6 +29,7 @@
 <script>
 // @ is an alias to /src
 import ProfileUnit from "@/components/ProfileUnit";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 export default {
@@ -41,6 +44,44 @@ export default {
             timeline: [],
             profilePic: ""
         };
+    },
+    methods: {
+        updateTimeline() {
+            axios({
+                method: "get",
+                url: `/authprofile/${this.$route.params.id}/timeline`
+            })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.timeline = res.data.user.timeline;
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        },
+        like(id) {
+            console.log("hello?");
+            axios({
+                method: "post",
+                url: `/post/${id}`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                },
+                data: { id: this.$store.getters.id }
+            })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.timeline.forEach(post => {
+                            if (post._id === res.data.post._id) {
+                                post.likes = res.data.post.likes;
+                                console.log(res.data.post);
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.log(err.response));
+        }
     },
     created() {
         axios({

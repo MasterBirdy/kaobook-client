@@ -9,6 +9,9 @@ module.exports = {
             "/authprofile": {
                 target: "http://localhost:3000"
             },
+            "/authfriend": {
+                target: "http://localhost:3000"
+            },
             "/auth": {
                 target: "http://localhost:3000"
             },

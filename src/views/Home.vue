@@ -26,10 +26,7 @@ export default {
         updateTimeline() {
             axios({
                 method: "get",
-                url: `/authprofile/${this.$store.getters.id}/timeline`,
-                headers: {
-                    authorization: "Bearer " + Cookies.get("jwtToken")
-                }
+                url: `/authprofile/${this.$store.getters.id}/timeline`
             })
                 .then(res => {
                     if (res.status === 200) {

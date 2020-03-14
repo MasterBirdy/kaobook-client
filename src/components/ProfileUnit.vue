@@ -83,11 +83,15 @@
                         </v-card-text>
 
                         <v-divider></v-divider>
-                        <v-card-actions class="px-4 d-flex justify-center">
+                        <v-card-actions class="px-4 d-flex flex-column">
                             <MessageForm
                                 :id="id"
                                 @postAdded="addPost"
                             ></MessageForm>
+                            <v-btn color="success" class="dark mt-2">
+                                <v-icon class="mr-2">mdi-account-plus</v-icon>
+                                Add as Friend
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>

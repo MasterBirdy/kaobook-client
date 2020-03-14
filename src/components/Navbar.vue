@@ -55,11 +55,21 @@
                 <v-list-item router :to="{ name: 'Register' }">
                     <v-list-item-action>
                         <v-icon class="white--text">
-                            mdi-account-plus
+                            mdi-clipboard-account
                         </v-icon>
                     </v-list-item-action>
                     <v-list-item-title class="white--text">
                         Register
+                    </v-list-item-title>
+                </v-list-item>
+                <v-list-item router :to="{ name: 'Friends' }">
+                    <v-list-item-action>
+                        <v-icon class="white--text">
+                            mdi-account-group
+                        </v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title class="white--text">
+                        Friends
                     </v-list-item-title>
                 </v-list-item>
             </v-list>
