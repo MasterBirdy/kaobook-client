@@ -96,6 +96,7 @@ import axios from "axios";
 export default {
     name: "CommentForm",
     props: {
+        profileId: String,
         title: String,
         text: String,
         author: Object,
@@ -118,7 +119,8 @@ export default {
                     text: this.commentText,
                     author: this.$store.getters.id,
                     post: this.postId,
-                    date: Date.now()
+                    date: Date.now(),
+                    recipient: this.profileId
                 };
                 axios({
                     method: "post",

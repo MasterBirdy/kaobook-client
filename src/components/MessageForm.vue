@@ -44,7 +44,7 @@ import axios from "axios";
 export default {
     name: "MessageForm",
     props: {
-        id: String
+        profileId: String
     },
     data() {
         return {
@@ -63,11 +63,12 @@ export default {
                     title: this.title,
                     text: this.text,
                     author: this.$store.getters.id,
+                    recipient: this.profileId,
                     date: Date.now()
                 };
                 axios({
                     method: "post",
-                    url: `/authprofile/${this.id}/post`,
+                    url: `/authprofile/${this.profileId}/post`,
                     headers: {
                         authorization: "Bearer " + Cookies.get("jwtToken")
                     },

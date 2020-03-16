@@ -13,7 +13,10 @@ export default new Vuex.Store({
         profilePic: "",
         email: "",
         timeline: [],
-        layout: "LandingLayout"
+        layout: "LandingLayout",
+        gender: "",
+        birthday: new Date(),
+        friends: []
     },
     plugins: [createPersistedState()],
     getters: {
@@ -24,7 +27,10 @@ export default new Vuex.Store({
         profilePic: state => state.profilePic,
         email: state => state.email,
         timeline: state => state.timeline,
-        layout: state => state.layout
+        layout: state => state.layout,
+        gender: state => state.gender,
+        birthday: state => state.birthday,
+        friends: state => state.friends
     },
     mutations: {
         setId(state, id) {
@@ -60,6 +66,15 @@ export default new Vuex.Store({
                     post.likes = updatedPost.likes;
                 }
             });
+        },
+        setGender(state, gender) {
+            state.gender = gender;
+        },
+        setBirthday(state, birthday) {
+            state.birthday = new Date(birthday);
+        },
+        setFriends(state, friends) {
+            state.friends = friends;
         }
     },
     actions: {},

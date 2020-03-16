@@ -20,8 +20,13 @@
             :name="name"
             :timeline="timeline"
             :profilePic="profilePic"
+            :birthday="birthday"
+            :gender="gender"
+            :isYou="false"
+            :friendStatus="friendStatus"
             @updateTimeline="updateTimeline"
             @like="like"
+            @addFriend="addFriend"
         ></ProfileUnit>
     </div>
 </template>
@@ -42,14 +47,71 @@ export default {
             loading: true,
             name: "",
             timeline: [],
-            profilePic: ""
+            profilePic: "",
+            gender: "",
+            birthday: new Date(),
+            friendStatus: ""
         };
     },
     methods: {
+        commitToStore(friendData) {
+            this.$store.commit("setFriends", friendData);
+            this.$store.getters.friends.forEach(friendType => {
+                if (
+                    friendType.friend._id.toString() ===
+                    this.$route.params.id.toString()
+                ) {
+                    if (
+                        friendType.status === "Sent" ||
+                        friendType.status === "Pending" ||
+                        friendType.status === "Friend"
+                    ) {
+                        this.friendStatus = friendType.status;
+                    }
+                }
+            });
+        },
+        addFriend() {
+            axios({
+                method: "post",
+                url: `/authfriend/${this.$route.params.id}`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                },
+                data: {
+                    id: this.$store.getters.id
+                }
+            })
+                .then(res => {
+                    if (res.status === 200) {
+                        return axios({
+                            method: "get",
+                            url: `/authfriend/${this.$store.getters.id}`,
+                            headers: {
+                                authorization:
+                                    "Bearer " + Cookies.get("jwtToken")
+                            }
+                        });
+                    } else {
+                        return Promise.reject(new Error("error"));
+                    }
+                })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.commitToStore(res.data.friends);
+                    }
+                })
+                .catch(err => {
+                    console.log(err.response);
+                });
+        },
         updateTimeline() {
             axios({
                 method: "get",
-                url: `/authprofile/${this.$route.params.id}/timeline`
+                url: `/authprofile/${this.$route.params.id}/timeline`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                }
             })
                 .then(res => {
                     if (res.status === 200) {
@@ -61,21 +123,22 @@ export default {
                 });
         },
         like(id) {
-            console.log("hello?");
             axios({
                 method: "post",
                 url: `/post/${id}`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
-                data: { id: this.$store.getters.id }
+                data: {
+                    author: this.$store.getters.id,
+                    recipient: this.$route.params.id
+                }
             })
                 .then(res => {
                     if (res.status === 200) {
                         this.timeline.forEach(post => {
                             if (post._id === res.data.post._id) {
                                 post.likes = res.data.post.likes;
-                                console.log(res.data.post);
                             }
                         });
                     }
@@ -86,10 +149,12 @@ export default {
     created() {
         axios({
             method: "get",
-            url: `/authprofile/${this.$route.params.id}/timeline`
+            url: `/authprofile/${this.$route.params.id}/timeline`,
+            headers: {
+                authorization: "Bearer " + Cookies.get("jwtToken")
+            }
         })
             .then(res => {
-                console.log(res);
                 if (res.status === 200) {
                     this.name = res.data.user.name
                         ? res.data.user.name
@@ -101,8 +166,24 @@ export default {
                         this.profilePic = res.data.user.profile_pic;
                     }
                     this.timeline = res.data.user.timeline;
+                    this.gender = res.data.user.gender;
+                    this.birthday = new Date(res.data.user.birthday);
                 } else {
                     return Promise.reject(new Error("error"));
+                }
+            })
+            .then(() => {
+                return axios({
+                    method: "get",
+                    url: `/authfriend/${this.$store.getters.id}/`,
+                    headers: {
+                        authorization: "Bearer " + Cookies.get("jwtToken")
+                    }
+                });
+            })
+            .then(res => {
+                if (res.status === 200) {
+                    this.commitToStore(res.data.friends);
                 }
             })
             .then(() => {

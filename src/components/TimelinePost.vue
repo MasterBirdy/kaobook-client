@@ -35,6 +35,7 @@
                     :author="author"
                     :comments="comments"
                     :postId="id"
+                    :profileId="profileId"
                     @commentAdded="commentAdded"
                 ></CommentForm>
             </v-card-actions>
@@ -49,6 +50,7 @@ export default {
         CommentForm
     },
     props: {
+        profileId: String,
         id: String,
         title: String,
         text: String,

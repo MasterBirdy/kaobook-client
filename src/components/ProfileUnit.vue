@@ -61,7 +61,7 @@
                                         <span class="font-weight-medium">
                                             Birthday:
                                         </span>
-                                        8/1/89
+                                        {{ formattedBirthday }}
                                     </span>
                                 </v-list-item>
                                 <v-list-item
@@ -76,7 +76,7 @@
                                         <span class="font-weight-medium">
                                             Gender:
                                         </span>
-                                        Male
+                                        {{ gender }}
                                     </span>
                                 </v-list-item>
                             </v-list>
@@ -85,18 +85,57 @@
                         <v-divider></v-divider>
                         <v-card-actions class="px-4 d-flex flex-column">
                             <MessageForm
-                                :id="id"
+                                :profileId="id"
                                 @postAdded="addPost"
                             ></MessageForm>
-                            <v-btn color="success" class="dark mt-2">
-                                <v-icon class="mr-2">mdi-account-plus</v-icon>
-                                Add as Friend
-                            </v-btn>
+                            <div v-if="!isYou">
+                                <v-btn
+                                    v-if="friendStatus === 'Sent'"
+                                    disabled
+                                    class="dark mt-2"
+                                >
+                                    Friend Request Sent
+                                </v-btn>
+                                <v-btn
+                                    v-else-if="friendStatus === 'Pending'"
+                                    disabled
+                                    class="dark mt-2"
+                                >
+                                    Friend Request Pending</v-btn
+                                >
+                                <v-btn
+                                    v-else-if="friendStatus === 'Friend'"
+                                    disabled
+                                    class="dark mt-2"
+                                >
+                                    Friends</v-btn
+                                >
+                                <v-btn
+                                    @click="addFriend"
+                                    v-else
+                                    color="success"
+                                    class="dark mt-2"
+                                >
+                                    <v-icon class="mr-2"
+                                        >mdi-account-plus</v-icon
+                                    >
+                                    Add as Friend
+                                </v-btn>
+                            </div>
                         </v-card-actions>
                     </v-card>
                 </v-col>
-                <v-col class="mt-n1" cols="12" lg="8" xl="7">
+                <v-col
+                    :class="{
+                        'mt-n1': true,
+                        'text-center': timeline.length === 0
+                    }"
+                    cols="12"
+                    lg="8"
+                    xl="7"
+                >
                     <v-timeline
+                        v-if="timeline.length > 0"
                         :class="{
                             'v-timeline--dense': $vuetify.breakpoint.smAndDown
                         }"
@@ -105,6 +144,7 @@
                         <TimelinePost
                             v-for="(post, index) in timeline"
                             :id="post._id"
+                            :profileId="id"
                             :key="post.title + index"
                             :title="post.title"
                             :text="post.text"
@@ -115,6 +155,7 @@
                             @commentAdded="addComment"
                         ></TimelinePost>
                     </v-timeline>
+                    <p v-else>Oops! No posts in this timeline. 🙁</p>
                 </v-col>
             </v-row>
         </v-container>
@@ -124,8 +165,8 @@
 <script>
 import MessageForm from "@/components/MessageForm";
 import TimelinePost from "@/components/TimelinePost";
-// import axios from "axios";
 import Cookies from "js-cookie";
+import moment from "moment";
 
 export default {
     name: "Home",
@@ -133,7 +174,11 @@ export default {
         id: String,
         name: String,
         profilePic: String,
-        timeline: Array
+        timeline: Array,
+        gender: String,
+        birthday: [String, Date],
+        isYou: Boolean,
+        friendStatus: String
     },
     components: {
         MessageForm,
@@ -149,6 +194,9 @@ export default {
         addComment() {
             this.updateTimeline();
         },
+        addFriend() {
+            this.$emit("addFriend");
+        },
         logout() {
             Cookies.remove("jwtToken");
         },
@@ -157,9 +205,12 @@ export default {
         }
     },
     computed: {
-        noName: function() {
+        noName() {
             // ?prop here?
             return this.name === "";
+        },
+        formattedBirthday() {
+            return moment(this.birthday).format("l");
         }
     }
 };

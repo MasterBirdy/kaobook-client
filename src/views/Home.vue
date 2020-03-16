@@ -4,6 +4,9 @@
         :name="$store.getters.name"
         :profilePic="$store.getters.profilePic"
         :timeline="$store.getters.timeline"
+        :gender="$store.getters.gender"
+        :birthday="$store.getters.birthday"
+        :isYou="true"
         @updateTimeline="updateTimeline"
         @like="like"
     ></ProfileUnit>
@@ -26,7 +29,10 @@ export default {
         updateTimeline() {
             axios({
                 method: "get",
-                url: `/authprofile/${this.$store.getters.id}/timeline`
+                url: `/authprofile/${this.$store.getters.id}/timeline`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                }
             })
                 .then(res => {
                     if (res.status === 200) {
@@ -37,7 +43,13 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.log(err.response);
+                    if (err.response.status === 401) {
+                        this.$store.commit("setLayout", "LandingLayout");
+                        Cookies.remove("jwtToken");
+                        localStorage.clear();
+                        this.$router.push({ name: "Login" });
+                    }
                 });
         },
         like(id) {
@@ -47,7 +59,10 @@ export default {
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
-                data: { id: this.$store.getters.id }
+                data: {
+                    author: this.$store.getters.id,
+                    recipient: this.$store.getters.id
+                }
             })
                 .then(res => {
                     if (res.status === 200) {
