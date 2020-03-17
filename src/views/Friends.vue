@@ -16,12 +16,22 @@
         </v-container>
         <v-container v-else>
             <h1 class="display-1">Friends:</h1>
-            <v-row>
-                <v-col cols="12" md="4" sm="6" lg="3">
+            <v-row v-if="$store.getters.friends.length === 0">
+                <v-col>
+                    <p>You currently don't have any friends.</p>
+                </v-col>
+            </v-row>
+            <v-row else>
+                <v-col
+                    cols="12"
+                    md="4"
+                    sm="6"
+                    lg="3"
+                    v-for="friend in $store.getters.friends"
+                    :key="friend._id"
+                >
                     <FriendCard
-                        v-for="friend in $store.getters.friends"
                         :friendId="friend.friend._id"
-                        :key="friend._id"
                         :id="friend._id"
                         :name="friend.friend.name"
                         :status="friend.status"
@@ -68,7 +78,11 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err.response);
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
                 });
         },
         accept(friendId) {
@@ -84,20 +98,31 @@ export default {
             })
                 .then(res => {
                     if (res.status === 200) {
+                        this.$emit("successEvent", "success", "Friend added!");
                         this.updateFriends();
                     }
                 })
                 .catch(err => {
-                    console.log(err.response);
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
                 });
         },
         reject(friendId) {
-            this.cancel(friendId);
+            this.$emit("successEvent", "success", "Friend request rejected.");
+            this.takeOff(friendId);
         },
         remove(friendId) {
-            this.cancel(friendId);
+            this.$emit("successEvent", "success", "Friend removed.");
+            this.takeOff(friendId);
         },
         cancel(friendId) {
+            this.$emit("successEvent", "success", "Friend request cancelled.");
+            this.takeOff(friendId);
+        },
+        takeOff(friendId) {
             axios({
                 method: "delete",
                 url: `/authfriend/${friendId}/cancel`,
@@ -109,13 +134,16 @@ export default {
                 }
             })
                 .then(res => {
-                    console.log("mee");
                     if (res.status === 200) {
                         this.updateFriends();
                     }
                 })
                 .catch(err => {
-                    console.log(err.response);
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
                 });
         }
     },

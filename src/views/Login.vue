@@ -2,7 +2,8 @@
     <div class="login">
         <v-container>
             <v-row>
-                <v-col cols="6" offset="3">
+                <v-col cols="12" sm="8" offset-sm="2" md="6" offset-md="3">
+                    <router-link :to="{ name: 'Landing' }">Go Back</router-link>
                     <v-alert type="error" v-if="errorOn" class="mt-n2">
                         {{ errorMessage }}
                         <ul v-if="errors.length">
@@ -11,12 +12,16 @@
                             </li>
                         </ul>
                     </v-alert>
-                    <LoginForm @successEvent="login"></LoginForm>
+                    <LoginForm
+                        class="mt-1"
+                        @successEvent="login"
+                        @errorEvent="errorEvent"
+                    ></LoginForm>
                     <v-divider class="mt-6 mb-2"></v-divider>
                     <p class="title font-weight-regular">
                         Login through Social Media
                     </p>
-                    <v-row class="pa-2 mt-n5">
+                    <v-row class="px-3 mt-n3">
                         <v-btn
                             dark
                             color="primary"
@@ -77,7 +82,11 @@ export default {
             localStorage.clear();
         },
         login() {
+            this.$emit("successEvent", "success", "Successfully logged in!");
             this.$router.push({ name: "SuccessLogin" });
+        },
+        errorEvent(errorMessage) {
+            this.$emit("errorEvent", "red", errorMessage);
         }
     }
 };

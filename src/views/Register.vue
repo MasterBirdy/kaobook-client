@@ -2,45 +2,46 @@
     <div class="register">
         <v-container>
             <v-row>
-                <v-col cols="6" offset="3">
-                    <v-alert type="error" v-if="errorOn" class="mt-n2">
-                        {{ errorMessage }}
-                        <ul v-if="errors.length">
-                            <li v-for="error in errors" :key="error">
-                                {{ error }}
-                            </li>
-                        </ul>
-                    </v-alert>
-                    <RegisterForm @errorEvent="handleError"></RegisterForm>
+                <v-col cols="12" sm="8" offset-sm="2" md="6" offset-md="3">
+                    <router-link :to="{ name: 'Landing' }">Go Back</router-link>
+                    <RegisterForm
+                        class="mt-1"
+                        @submit="register"
+                        :edit="false"
+                    ></RegisterForm>
                 </v-col>
             </v-row>
         </v-container>
     </div>
 </template>
 <script>
+import axios from "axios";
 import RegisterForm from "@/components/RegisterForm";
 export default {
     name: "Register",
     components: {
         RegisterForm
     },
-    data() {
-        return {
-            errorOn: false,
-            errorMessage: "Error alert.",
-            errors: []
-        };
-    },
     methods: {
-        handleError(error) {
-            this.errorOn = true;
-            if (error.message) {
-                this.errorMessage = error.message;
-            }
-            if (error.errors) {
-                this.errors = [];
-                error.errors.forEach(err => this.error.push(err));
-            }
+        register(user) {
+            axios({ url: "/registeruser", data: user, method: "post" })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.$emit(
+                            "successEvent",
+                            "success",
+                            "Registration success! Please log in."
+                        );
+                        this.$router.push({ name: "Login" });
+                    }
+                })
+                .catch(err => {
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
+                });
         }
     }
 };

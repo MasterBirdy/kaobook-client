@@ -1,24 +1,43 @@
 <template>
-    <v-container fluid>
-        <v-row>
-            <v-col><p>Logging you in and redirecting you shortly...</p></v-col>
-        </v-row>
-    </v-container>
+    <div>
+        <v-container>
+            <v-row>
+                <v-col cols="12" sm="8" offset-sm="2" md="6" offset-md="3">
+                    <RegisterForm
+                        class="mt-1"
+                        @submit="edit"
+                        :edit="true"
+                    ></RegisterForm>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
 </template>
 <script>
-import Cookies from "js-cookie";
+import RegisterForm from "@/components/RegisterForm";
 import axios from "axios";
 
 export default {
+    components: {
+        RegisterForm
+    },
     methods: {
-        getMainInfo() {
+        edit(user) {
             axios({
-                method: "get",
-                url: "/authprofile",
-                headers: {
-                    authorization: "Bearer " + Cookies.get("jwtToken")
-                }
+                url: `/authprofile/${this.$store.getters.id}/edit`,
+                data: user,
+                method: "put"
             })
+                .then(res => {
+                    if (res.status === 200) {
+                        return axios({
+                            url: `/authprofile/${this.$store.getters.id}/profile`,
+                            method: "get"
+                        });
+                    } else {
+                        return Promise.reject(new Error("error"));
+                    }
+                })
                 .then(res => {
                     if (res.status === 200) {
                         this.$store.commit(
@@ -44,46 +63,23 @@ export default {
                             );
                         }
                         this.$store.commit("setEmail", res.data.data.email);
-                        this.$store.commit("setId", res.data.data._id);
+
                         this.$store.commit("setGender", res.data.data.gender);
                         this.$store.commit(
                             "setBirthday",
                             res.data.data.birthday
                         );
-                    } else {
-                        return Promise.reject(new Error("error"));
+                        this.$emit(
+                            "successEvent",
+                            "success",
+                            "Profile successfully editted!"
+                        );
+                        this.$router.push({ name: "Home" });
                     }
                 })
-                .then(() => {
-                    setTimeout(() => {
-                        this.$router.push("/yourprofile");
-                    }, 900);
-                })
-                .catch(err => {
-                    this.$emit(
-                        "errorEvent",
-                        "red darken-2",
-                        err.response.data.message
-                    );
-                    this.$router.push("/");
+                .catch(() => {
+                    this.$emit("errorEvent", "red darken-2", "Error");
                 });
-        }
-    },
-    created() {
-        if (Cookies.get("jwtToken")) {
-            this.getMainInfo();
-        } else {
-            axios
-                .get("/auth/getfacebookauth")
-                .then(res => {
-                    if (res.status === 200) {
-                        Cookies.set("jwtToken", res.data.token);
-                        this.getMainInfo();
-                    } else {
-                        Promise.reject(new Error("error"));
-                    }
-                })
-                .catch(err => console.log(err.response));
         }
     }
 };

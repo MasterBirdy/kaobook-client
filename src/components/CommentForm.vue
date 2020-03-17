@@ -2,7 +2,7 @@
     <v-dialog max-width="700px" v-model="dialog">
         <template v-slot:activator="{ on }">
             <v-btn depressed color="primary lighten-1" v-on="on">
-                <v-icon class="mr-2">
+                <v-icon v-if="!$vuetify.breakpoint.xsOnly" class="mr-2">
                     mdi-comment
                 </v-icon>
                 Comment
@@ -12,10 +12,15 @@
             <v-container class="py-0">
                 <v-row>
                     <v-col class="pa-4">
-                        <v-card outlined class="px-5">
+                        <v-card
+                            outlined
+                            :class="{
+                                'px-5': !$vuetify.breakpoint.xsOnly
+                            }"
+                        >
                             <v-container>
                                 <v-row>
-                                    <v-col cols="9">
+                                    <v-col cols="8" sm="9" md="10">
                                         <v-card-title>
                                             <p>{{ title | decode }}</p>
                                         </v-card-title>
@@ -26,7 +31,7 @@
                                             <p>{{ text | decode }}</p>
                                         </v-card-text>
                                     </v-col>
-                                    <v-col cols="3"
+                                    <v-col cols="4" sm="3" md="2"
                                         ><v-avatar size="75">
                                             <img
                                                 :src="
@@ -133,7 +138,9 @@ export default {
                     .then(() => {
                         this.$emit("commentAdded");
                     })
-                    .catch(err => console.log(err.response))
+                    .catch(err => {
+                        this.$emit("errorEvent", err.response.data.message);
+                    })
                     .finally(() => {
                         this.loading = false;
                         this.dialog = false;

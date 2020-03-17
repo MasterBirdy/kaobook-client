@@ -1,7 +1,8 @@
 <template>
     <v-card outlined class="pa-2">
         <v-card-title>
-            Register
+            <span v-if="edit">Edit Profile</span>
+            <span v-else>Register</span>
         </v-card-title>
         <v-card-text>
             <v-form ref="form">
@@ -19,6 +20,7 @@
                     :rules="[lengthRules]"
                 ></v-text-field>
                 <v-text-field
+                    v-if="!edit"
                     class="mb-1"
                     label="Password"
                     v-model="password"
@@ -26,6 +28,7 @@
                     :rules="[passwordRules]"
                 ></v-text-field>
                 <v-text-field
+                    v-if="!edit"
                     class="mb-1"
                     label="Confirm Password"
                     v-model="confirmPassword"
@@ -58,17 +61,24 @@
                     :items="genders"
                     :rules="[requiredRules]"
                 ></v-select>
+                <v-text-field
+                    class="mb-1"
+                    label="Profile Pic"
+                    v-model="profilePic"
+                ></v-text-field>
                 <v-btn class="success" @click="submit">Submit</v-btn>
             </v-form>
         </v-card-text>
     </v-card>
 </template>
 <script>
-import axios from "axios";
 import moment from "moment";
 
 export default {
     name: "RegisterForm",
+    props: {
+        edit: { type: Boolean, default: false }
+    },
     data() {
         return {
             firstname: "",
@@ -77,6 +87,7 @@ export default {
             birthday: null,
             password: "",
             confirmPassword: "",
+            profilePic: "",
             genders: ["male", "female", "non-binary"],
             gender: "male",
             lengthRules: v => v.length >= 3 || "Minimum length is 3 characters",
@@ -98,21 +109,28 @@ export default {
                 const user = {
                     firstname: this.firstname,
                     lastname: this.lastname,
-                    password: this.password,
                     email: this.email,
                     birthday: this.birthday,
-                    gender: this.gender
+                    gender: this.gender,
+                    profilePic: this.profilePic
                 };
-                console.log(user);
-                axios({ url: "/registeruser", data: user, method: "post" })
-                    .then(res => {
-                        if (res.status === 200) this.$router.push("/");
-                    })
-                    .catch(err => {
-                        console.log(err.response);
-                        this.$emit("errorEvent", err.response.data);
-                    });
+                if (!this.edit) {
+                    user.password = this.password;
+                }
+                this.$emit("submit", user);
             }
+        }
+    },
+    mounted() {
+        if (this.edit) {
+            this.firstname = this.$store.getters.firstName;
+            this.lastname = this.$store.getters.lastName;
+            this.email = this.$store.getters.email;
+            this.birthday = moment(
+                new Date(this.$store.getters.birthday)
+            ).format("YYYY-MM-DD");
+            this.gender = this.$store.getters.gender;
+            this.profilePic = this.$store.getters.profilePic;
         }
     }
 };

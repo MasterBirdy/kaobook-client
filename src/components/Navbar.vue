@@ -42,24 +42,14 @@
                         Home
                     </v-list-item-title>
                 </v-list-item>
-                <v-list-item router :to="{ name: 'Login' }">
-                    <v-list-item-action>
-                        <v-icon class="white--text">
-                            mdi-login
-                        </v-icon>
-                    </v-list-item-action>
-                    <v-list-item-title class="white--text">
-                        Login
-                    </v-list-item-title>
-                </v-list-item>
-                <v-list-item router :to="{ name: 'Register' }">
+                <v-list-item router :to="{ name: 'Edit' }">
                     <v-list-item-action>
                         <v-icon class="white--text">
                             mdi-clipboard-account
                         </v-icon>
                     </v-list-item-action>
                     <v-list-item-title class="white--text">
-                        Register
+                        Edit Profile
                     </v-list-item-title>
                 </v-list-item>
                 <v-list-item router :to="{ name: 'Friends' }">

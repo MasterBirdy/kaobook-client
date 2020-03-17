@@ -9,6 +9,7 @@ import Register from "@/views/Register.vue";
 import Friends from "@/views/Friends.vue";
 import SuccessLogin from "@/views/SuccessLogin.vue";
 import Profile from "@/views/Profile.vue";
+import Edit from "@/views/Edit.vue";
 
 Vue.use(VueRouter);
 
@@ -53,6 +54,12 @@ const routes = [
         beforeEnter: cookieCheck
     },
     {
+        path: "/edit",
+        name: "Edit",
+        component: Edit,
+        beforeEnter: cookieCheck
+    },
+    {
         path: "/redirect",
         name: "SuccessLogin",
         component: SuccessLogin
@@ -72,7 +79,7 @@ const router = new VueRouter({
 const cookieCheck = (to, from, next) => {
     if (Store.getters.name === "") {
         if (!Cookies.get("jwtToken")) {
-            next({ name: "Landing" });
+            next({ name: "Login" });
         } else {
             next({ name: "SuccessLogin" });
         }

@@ -20,7 +20,10 @@
                             class="mr-2"
                             @click="like"
                         >
-                            <v-icon class="mr-2">
+                            <v-icon
+                                v-if="!$vuetify.breakpoint.xsOnly"
+                                class="mr-2"
+                            >
                                 mdi-thumb-up
                             </v-icon>
                             {{ userLiked ? "Liked" : "Like" }}
@@ -37,6 +40,7 @@
                     :postId="id"
                     :profileId="profileId"
                     @commentAdded="commentAdded"
+                    @errorEvent="errorEvent"
                 ></CommentForm>
             </v-card-actions>
         </v-card>
@@ -66,6 +70,9 @@ export default {
     methods: {
         like() {
             this.$emit("like", this.id);
+        },
+        errorEvent(errorMessage) {
+            this.$emit("errorEvent", errorMessage);
         },
         commentAdded() {
             this.$emit("commentAdded");

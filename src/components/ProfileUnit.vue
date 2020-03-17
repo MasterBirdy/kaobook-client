@@ -33,9 +33,10 @@
                             alt="Profile Pic"
                         />
                     </v-avatar>
+                    <p class="overline grey--text mt-2">(ID: {{ id }})</p>
                     <v-card
                         outlined
-                        class="mt-3 mx-4"
+                        class="mt-n2 mx-4"
                         :style="{ background: '#fafafa' }"
                     >
                         <v-card-title class="pb-0 justify-center mt-n2">
@@ -43,7 +44,6 @@
                                 Details
                             </span>
                         </v-card-title>
-
                         <v-card-text class="pb-0">
                             <v-list
                                 class="px-4 pt-1"
@@ -68,10 +68,27 @@
                                     class="justify-center align-baseline my-1"
                                     style="min-height: 0px"
                                 >
-                                    <v-icon color="blue" class="mr-2">
+                                    <v-icon
+                                        v-if="gender === 'male'"
+                                        color="blue"
+                                        class="mr-2"
+                                    >
                                         mdi-gender-male
                                     </v-icon>
-
+                                    <v-icon
+                                        v-else-if="gender === 'female'"
+                                        color="pink"
+                                        class="mr-2"
+                                    >
+                                        mdi-gender-female
+                                    </v-icon>
+                                    <v-icon
+                                        v-else
+                                        color="yellow darken-2"
+                                        class="mr-2"
+                                    >
+                                        mdi-gender-non-binary
+                                    </v-icon>
                                     <span class="body-2">
                                         <span class="font-weight-medium">
                                             Gender:
@@ -87,6 +104,7 @@
                             <MessageForm
                                 :profileId="id"
                                 @postAdded="addPost"
+                                @errorEvent="errorEvent"
                             ></MessageForm>
                             <div v-if="!isYou">
                                 <v-btn
@@ -153,6 +171,7 @@
                             :comments="post.comments"
                             @like="like"
                             @commentAdded="addComment"
+                            @errorEvent="errorEvent"
                         ></TimelinePost>
                     </v-timeline>
                     <p v-else>Oops! No posts in this timeline. 🙁</p>
@@ -185,14 +204,19 @@ export default {
         TimelinePost
     },
     methods: {
+        errorEvent(errorMessage) {
+            this.$emit("errorEvent", errorMessage);
+        },
         updateTimeline() {
             this.$emit("updateTimeline");
         },
         addPost() {
             this.updateTimeline();
+            this.$emit("successEvent", "Post added!");
         },
         addComment() {
             this.updateTimeline();
+            this.$emit("successEvent", "Comment added!");
         },
         addFriend() {
             this.$emit("addFriend");
@@ -206,7 +230,6 @@ export default {
     },
     computed: {
         noName() {
-            // ?prop here?
             return this.name === "";
         },
         formattedBirthday() {

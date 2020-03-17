@@ -9,6 +9,8 @@
         :isYou="true"
         @updateTimeline="updateTimeline"
         @like="like"
+        @successEvent="successEvent"
+        @errorEvent="errorEvent"
     ></ProfileUnit>
 </template>
 
@@ -26,6 +28,12 @@ export default {
         this.updateTimeline();
     },
     methods: {
+        successEvent(successMessage) {
+            this.$emit("successEvent", "success", successMessage);
+        },
+        errorEvent(errorMessage) {
+            this.$emit("errorEvent", "red darken-2", errorMessage);
+        },
         updateTimeline() {
             axios({
                 method: "get",
@@ -43,7 +51,7 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err.response);
+                    this.$emit("errorEvent", "red", err.response.data.message);
                     if (err.response.status === 401) {
                         this.$store.commit("setLayout", "LandingLayout");
                         Cookies.remove("jwtToken");
@@ -69,7 +77,9 @@ export default {
                         this.$store.commit("changeLikes", res.data.post);
                     }
                 })
-                .catch(err => console.log(err.response));
+                .catch(err =>
+                    this.$emit("errorEvent", "red", err.response.data.message)
+                );
         }
     }
 };

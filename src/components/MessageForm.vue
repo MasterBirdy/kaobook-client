@@ -77,7 +77,9 @@ export default {
                     .then(res => {
                         this.$emit("postAdded", res.data.post);
                     })
-                    .catch(err => console.log(err.response))
+                    .catch(err =>
+                        this.$emit("errorEvent", err.response.data.message)
+                    )
                     .finally(() => {
                         this.loading = false;
                         this.dialog = false;

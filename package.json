@@ -50,5 +50,18 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "description": "## Project setup ``` npm install ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasterBirdy/kaobook-client.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MasterBirdy/kaobook-client/issues"
+  },
+  "homepage": "https://github.com/MasterBirdy/kaobook-client#readme"
 }

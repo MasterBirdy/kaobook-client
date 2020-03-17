@@ -27,6 +27,8 @@
             @updateTimeline="updateTimeline"
             @like="like"
             @addFriend="addFriend"
+            @successEvent="successEvent"
+            @errorEvent="errorEvent"
         ></ProfileUnit>
     </div>
 </template>
@@ -54,6 +56,12 @@ export default {
         };
     },
     methods: {
+        successEvent(successMessage) {
+            this.$emit("successEvent", "success", successMessage);
+        },
+        errorEvent(errorMessage) {
+            this.$emit("errorEvent", "red darken-2", errorMessage);
+        },
         commitToStore(friendData) {
             this.$store.commit("setFriends", friendData);
             this.$store.getters.friends.forEach(friendType => {
@@ -98,11 +106,20 @@ export default {
                 })
                 .then(res => {
                     if (res.status === 200) {
+                        this.$emit(
+                            "successEvent",
+                            "success",
+                            "Friend request sent!"
+                        );
                         this.commitToStore(res.data.friends);
                     }
                 })
                 .catch(err => {
-                    console.log(err.response);
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
                 });
         },
         updateTimeline() {
@@ -119,7 +136,11 @@ export default {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
                 });
         },
         like(id) {
@@ -143,55 +164,72 @@ export default {
                         });
                     }
                 })
-                .catch(err => console.log(err.response));
+                .catch(err =>
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    )
+                );
         }
     },
     created() {
-        axios({
-            method: "get",
-            url: `/authprofile/${this.$route.params.id}/timeline`,
-            headers: {
-                authorization: "Bearer " + Cookies.get("jwtToken")
-            }
-        })
-            .then(res => {
-                if (res.status === 200) {
-                    this.name = res.data.user.name
-                        ? res.data.user.name
-                        : res.data.user.first_name +
-                          " " +
-                          res.data.user.last_name;
+        if (
+            this.$route.params.id.toLowerCase() ===
+            this.$store.getters.id.toLowerCase()
+        ) {
+            this.$router.push({ name: "Home" });
+        } else {
+            axios({
+                method: "get",
+                url: `/authprofile/${this.$route.params.id}/timeline`,
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                }
+            })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.name = res.data.user.name
+                            ? res.data.user.name
+                            : res.data.user.first_name +
+                              " " +
+                              res.data.user.last_name;
 
-                    if (res.data.user.profile_pic) {
-                        this.profilePic = res.data.user.profile_pic;
+                        if (res.data.user.profile_pic) {
+                            this.profilePic = res.data.user.profile_pic;
+                        }
+                        this.timeline = res.data.user.timeline;
+                        this.gender = res.data.user.gender;
+                        this.birthday = new Date(res.data.user.birthday);
+                    } else {
+                        return Promise.reject(new Error("error"));
                     }
-                    this.timeline = res.data.user.timeline;
-                    this.gender = res.data.user.gender;
-                    this.birthday = new Date(res.data.user.birthday);
-                } else {
-                    return Promise.reject(new Error("error"));
-                }
-            })
-            .then(() => {
-                return axios({
-                    method: "get",
-                    url: `/authfriend/${this.$store.getters.id}/`,
-                    headers: {
-                        authorization: "Bearer " + Cookies.get("jwtToken")
+                })
+                .then(() => {
+                    return axios({
+                        method: "get",
+                        url: `/authfriend/${this.$store.getters.id}/`,
+                        headers: {
+                            authorization: "Bearer " + Cookies.get("jwtToken")
+                        }
+                    });
+                })
+                .then(res => {
+                    if (res.status === 200) {
+                        this.commitToStore(res.data.friends);
                     }
+                })
+                .then(() => {
+                    this.loading = false;
+                })
+                .catch(err => {
+                    this.$emit(
+                        "errorEvent",
+                        "red darken-2",
+                        err.response.data.message
+                    );
                 });
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    this.commitToStore(res.data.friends);
-                }
-            })
-            .then(() => {
-                this.loading = false;
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        }
     }
 };
 </script>
