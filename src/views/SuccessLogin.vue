@@ -37,12 +37,12 @@ export default {
                             "setLastName",
                             res.data.data.last_name
                         );
-                        if (res.data.data.profile_pic) {
-                            this.$store.commit(
-                                "setProfilePic",
-                                res.data.data.profile_pic
-                            );
-                        }
+                        this.$store.commit(
+                            "setProfilePic",
+                            res.data.data.profile_pic
+                                ? res.data.data.profile_pic
+                                : ""
+                        );
                         this.$store.commit("setEmail", res.data.data.email);
                         this.$store.commit("setId", res.data.data._id);
                         this.$store.commit("setGender", res.data.data.gender);

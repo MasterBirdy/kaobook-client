@@ -19,7 +19,7 @@
                 </v-toolbar-title>
             </router-link>
             <v-spacer></v-spacer>
-            <v-btn href="/auth/logout" @click="logout" text color="white">
+            <v-btn @click="logout" text color="white">
                 <span>Sign Out</span>
                 <v-icon class="ml-2"> mdi-exit-to-app</v-icon>
             </v-btn>
@@ -85,6 +85,7 @@ export default {
                 method: "get",
                 url: `/auth/logout`
             })
+                .then(() => {})
                 .catch(err => console.log(err))
                 .finally(() => this.$router.push({ name: "Landing" }));
         }
