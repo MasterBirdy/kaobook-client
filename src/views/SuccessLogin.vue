@@ -14,12 +14,13 @@ export default {
         getMainInfo() {
             axios({
                 method: "get",
-                url: "/authprofile",
+                url: "http://167.172.216.194/authprofile",
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 }
             })
                 .then(res => {
+                    console.log(res);
                     if (res.status === 200) {
                         this.$store.commit(
                             "setName",
@@ -60,6 +61,7 @@ export default {
                     }, 900);
                 })
                 .catch(err => {
+                    console.log(err);
                     this.$emit(
                         "errorEvent",
                         "red darken-2",
@@ -74,7 +76,7 @@ export default {
             this.getMainInfo();
         } else {
             axios
-                .get("/auth/getfacebookauth")
+                .get("http://167.172.216.194/auth/getfacebookauth")
                 .then(res => {
                     if (res.status === 200) {
                         Cookies.set("jwtToken", res.data.token);

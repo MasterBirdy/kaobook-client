@@ -24,7 +24,11 @@ export default {
     },
     methods: {
         register(user) {
-            axios({ url: "/registeruser", data: user, method: "post" })
+            axios({
+                url: "http://167.172.216.194/registeruser",
+                data: user,
+                method: "post"
+            })
                 .then(res => {
                     if (res.status === 200) {
                         this.$emit(

@@ -66,7 +66,7 @@ export default {
         updateFriends() {
             axios({
                 method: "get",
-                url: `/authfriend/${this.$store.getters.id}/`,
+                url: `http://167.172.216.194/authfriend/${this.$store.getters.id}/`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 }
@@ -88,7 +88,7 @@ export default {
         accept(friendId) {
             axios({
                 method: "post",
-                url: `/authfriend/${friendId}/accept`,
+                url: `http://167.172.216.194/authfriend/${friendId}/accept`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
@@ -125,7 +125,7 @@ export default {
         takeOff(friendId) {
             axios({
                 method: "delete",
-                url: `/authfriend/${friendId}/cancel`,
+                url: `http://167.172.216.194/authfriend/${friendId}/cancel`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },

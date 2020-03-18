@@ -82,7 +82,7 @@ export default {
         addFriend() {
             axios({
                 method: "post",
-                url: `/authfriend/${this.$route.params.id}`,
+                url: `http://167.172.216.194/authfriend/${this.$route.params.id}`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
@@ -94,7 +94,7 @@ export default {
                     if (res.status === 200) {
                         return axios({
                             method: "get",
-                            url: `/authfriend/${this.$store.getters.id}`,
+                            url: `http://167.172.216.194/authfriend/${this.$store.getters.id}`,
                             headers: {
                                 authorization:
                                     "Bearer " + Cookies.get("jwtToken")
@@ -125,7 +125,7 @@ export default {
         updateTimeline() {
             axios({
                 method: "get",
-                url: `/authprofile/${this.$route.params.id}/timeline`,
+                url: `http://167.172.216.194/authprofile/${this.$route.params.id}/timeline`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 }
@@ -146,7 +146,7 @@ export default {
         like(id) {
             axios({
                 method: "post",
-                url: `/post/${id}`,
+                url: `http://167.172.216.194/post/${id}`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
@@ -182,7 +182,7 @@ export default {
         } else {
             axios({
                 method: "get",
-                url: `/authprofile/${this.$route.params.id}/timeline`,
+                url: `http://167.172.216.194/authprofile/${this.$route.params.id}/timeline`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 }
@@ -208,7 +208,7 @@ export default {
                 .then(() => {
                     return axios({
                         method: "get",
-                        url: `/authfriend/${this.$store.getters.id}/`,
+                        url: `http://167.172.216.194/authfriend/${this.$store.getters.id}/`,
                         headers: {
                             authorization: "Bearer " + Cookies.get("jwtToken")
                         }
