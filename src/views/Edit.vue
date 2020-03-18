@@ -26,7 +26,10 @@ export default {
             axios({
                 url: `/authprofile/${this.$store.getters.id}/edit`,
                 data: user,
-                method: "put"
+                method: "put",
+                headers: {
+                    authorization: "Bearer " + Cookies.get("jwtToken")
+                }
             })
                 .then(res => {
                     if (res.status === 200) {

@@ -88,7 +88,7 @@ export default {
         accept(friendId) {
             axios({
                 method: "post",
-                url: `http://167.172.216.194/authfriend/${friendId}/accept`,
+                url: `/authfriend/${friendId}/accept`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
