@@ -44,11 +44,7 @@ export default {
                     email: this.email,
                     password: this.password
                 };
-                axios({
-                    url: "http://167.172.216.194/auth/login",
-                    data: user,
-                    method: "POST"
-                })
+                axios({ url: "/auth/login", data: user, method: "POST" })
                     .then(res => {
                         if (res.status === 200) {
                             Cookies.set("jwtToken", res.data.token);

@@ -68,7 +68,7 @@ export default {
                 };
                 axios({
                     method: "post",
-                    url: `http://167.172.216.194/authprofile/${this.profileId}/post`,
+                    url: `/authprofile/${this.profileId}/post`,
                     headers: {
                         authorization: "Bearer " + Cookies.get("jwtToken")
                     },

@@ -24,14 +24,14 @@ export default {
     methods: {
         edit(user) {
             axios({
-                url: `http://167.172.216.194/authprofile/${this.$store.getters.id}/edit`,
+                url: `/authprofile/${this.$store.getters.id}/edit`,
                 data: user,
                 method: "put"
             })
                 .then(res => {
                     if (res.status === 200) {
                         return axios({
-                            url: `http://167.172.216.194/authprofile/${this.$store.getters.id}/profile`,
+                            url: `/authprofile/${this.$store.getters.id}/profile`,
                             method: "get"
                         });
                     } else {

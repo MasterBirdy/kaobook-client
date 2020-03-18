@@ -129,7 +129,7 @@ export default {
                 };
                 axios({
                     method: "post",
-                    url: `http://167.172.216.194/post/${this.postId}/comment`,
+                    url: `/post/${this.postId}/comment`,
                     headers: {
                         authorization: "Bearer " + Cookies.get("jwtToken")
                     },

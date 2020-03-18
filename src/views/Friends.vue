@@ -125,7 +125,7 @@ export default {
         takeOff(friendId) {
             axios({
                 method: "delete",
-                url: `http://167.172.216.194/authfriend/${friendId}/cancel`,
+                url: `/authfriend/${friendId}/cancel`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 },
