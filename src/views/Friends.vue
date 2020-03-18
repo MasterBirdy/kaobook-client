@@ -66,7 +66,7 @@ export default {
         updateFriends() {
             axios({
                 method: "get",
-                url: `http://167.172.216.194/authfriend/${this.$store.getters.id}/`,
+                url: `/authfriend/${this.$store.getters.id}/`,
                 headers: {
                     authorization: "Bearer " + Cookies.get("jwtToken")
                 }
