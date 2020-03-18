@@ -36,7 +36,11 @@ export default {
                     if (res.status === 200) {
                         return axios({
                             url: `/authprofile/${this.$store.getters.id}/profile`,
-                            method: "get"
+                            method: "get",
+                            headers: {
+                                authorization:
+                                    "Bearer " + Cookies.get("jwtToken")
+                            }
                         });
                     } else {
                         return Promise.reject(new Error("error"));

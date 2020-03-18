@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import Cookies from "js-cookie";
 
 export default {
@@ -80,7 +81,12 @@ export default {
     methods: {
         logout() {
             Cookies.remove("jwtToken");
-            localStorage.clear();
+            axios({
+                method: "get",
+                url: `/auth/logout`
+            })
+                .catch(err => console.log(err))
+                .finally(() => this.$router.push({ name: "Landing" }));
         }
     }
 };
