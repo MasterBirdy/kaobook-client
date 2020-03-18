@@ -15,6 +15,7 @@
 </template>
 <script>
 import RegisterForm from "@/components/RegisterForm";
+import Cookies from "js-cookie";
 import axios from "axios";
 
 export default {
