@@ -17,23 +17,8 @@
                         @successEvent="login"
                         @errorEvent="errorEvent"
                     ></LoginForm>
-                    <v-divider class="mt-6 mb-2"></v-divider>
-                    <p class="title font-weight-regular">
-                        Login through Social Media
-                    </p>
-                    <v-row class="px-3 mt-n3">
-                        <v-btn
-                            dark
-                            color="primary"
-                            depressed
-                            class="px-2 mr-2"
-                            href="/auth/facebook"
-                        >
-                            <v-icon color="white" class="mr-1">
-                                mdi-facebook
-                            </v-icon>
-                            <span>facebook</span>
-                        </v-btn>
+
+                    <v-row class="px-6 mt-3">
                         <v-btn
                             dark
                             color="info"
